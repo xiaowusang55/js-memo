@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <script>
+        // function createPerson(name, age, job) {
+        //     var o = new Object();
+        //     o.name = name;
+        //     o.age = age;
+        //     o.job = job;
+        //     o.sayName = function () {
+        //         console.log(this);
+        //     }
+        //     return o;
+        // }
+
+        // var person1 = createPerson("Nicholas", 29, "Software Engineer");
+        // var person2 = createPerson("Greg", 27, "Doctor");
+        // person1.sayName();
+
+        // function Person() {
+
+        // }
+        // var person1 = new Person("Nicholas", 29, "Software Engineer");
+
+        // Person.prototype = {
+        //     constructor: Person,
+        //     name: "Nicholas",
+        //     age: 29,
+        //     job: "Software Engineer",
+        //     sayName: function () {
+        //         console.log(this.name);
+        //     }
+        // }
+
+        // function Person() {}
+        // Person.prototype.name = "Nicholas";
+        // Person.prototype.age = 29;
+        // Person.prototype.job = "Software Engineer";
+        // Person.prototype.sayName = function () {
+        //     console.log(this.name);
+        // };
+
+        // String.prototype.xiaowusang = function (text) {
+        //     return this.indexOf(text);
+        // } 
+
+        // let msg = "Hello world!";
+        // console.log(msg.xiaowusang("rd"));
+
+
+        function Person() {}
+        Person.prototype = {
+            constructor: Person,
+            name: "Nicholas",
+            age: 29,
+            job: "Software Engineer",
+            friends: ["Shelby", "Court"],
+            sayName: function () {
+                alert(this.name);
+            }
+        };
+        var person1 = new Person();
+        var person2 = new Person();
+
+        person1.friends.push("Van");
+        person2.friends.push("xiaowsuang");
+        // person1.name = "hahah"
+        person1.heiehe = function() {
+            console.log(this.name);
+        }
+
+        
+
+    </script>
+
+
+
+</body>
+
+</html>

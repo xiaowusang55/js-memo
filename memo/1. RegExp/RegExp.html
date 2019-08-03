@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+// 正则实例的创建方式
+        // var re1 = /\[bc\]at/i;
+
+        // var re2 = new RegExp("\\[bc\\]at", "i");
+        // console.log("=================================");
+
+// 正则实例的属性（global，ingnoreCase，multiple， lastIndex）及exec（）方法。及方法返回值的属性（index，input），各项匹配结果。        // var text = "mom and dad and baby";
+        // var pattern = /mom( and dad( and baby)?)?/gi;
+
+        // var matches = pattern.exec(text);
+        // console.log("=================================");
+
+// 正则实例exec（）方法执行 全局匹配和非全局匹配 方式的差异
+        // var text = "cat, bat, sat, fat";
+        // var pattern1 = /.at/;
+
+        // var matches =  pattern1.exec(text);
+
+        // matches = pattern1.exec(text);
+        
+
+        // var pattern2 = /.at/g;
+        // var matches = pattern2.exec(text);
+
+        // matches = pattern2.exec(text);
+        // matches = pattern2.exec(text);
+        // matches = pattern2.exec(text);
+        // console.log("===============================");
+
+// 正则实例test（）方法，根据其返回值 true false ，进行 if 条件判断。
+        // var text = "12222222223";
+        // var pattern = /\d{11}/;
+        // if (pattern.test(text) && text.length == 11) {
+        //     console.log("phone number is correct!");
+        // } else {
+        //     console.log("invalid phone number!!!!!");
+        // }
+        // console.log("===============================");
+
+// 正则构造函数的 属性
+        var text = "this has been a short summer";
+        var pattern = /(.)hort/g;
+
+        if (pattern.test(text)) {
+            console.log(RegExp.input);
+            console.log(RegExp.leftContext);
+            console.log(RegExp.rightContext);
+            console.log(RegExp.lastMatch);
+            console.log(RegExp.lastParen);
+            console.log(RegExp.multiline);
+        }
+
+
+        
+        
+        
+
+        
+
+
+
+    
+    
+    </script>
+
+
+
+
+</body>
+</html>

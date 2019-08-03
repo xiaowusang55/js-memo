@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+    
+//为了便于操作基本类型值， ECMAScript 还提供了 3个 特殊的引用类型：Boolean, Number, String。
+//当读取一个基本类型值的时候，后台 就会创建一个对应的 基本包装类型 的 对象，从而让我们能够调用一些方法来操作这些数据。  
+
+        // var s1 = "some text";
+        // var s2 = s1.substring(2);
+        // console.log(s2);
+
+//从逻辑上讲，它们不应该有方法。其实为了让我们实现这种直观的操作，后台已经自动完成了一些列的处理。
+//当第二行代码访问 s2 时， 访问过程处于一种读取模式，也就是要从内存中读取这个字符串的值。而在读取模式中访问字符串时，后台都会自动完成下列处理。
+//创建 String 类型的一个实例 ===》 在实例上调用指定的方法 ===》 销毁这个实例。
+//可以想像成以下代码。
+        // var s1 = new String("some text");
+        // var s2 = s1.substring(2);
+        // s1 = null;
+
+//以上步骤也分别适用于 Boolean  Number 对应的 布尔值 和 数字值。
+//引用类型 与 基本包装类型 的主要区别就是 对象的生存期。
+/* 使用 new 操作符创建的引用类型的实例，在执行流离开当前作用域以前都一直保存在内存中。
+    而自动创建的基本包装类型的对象，则只存在于一行代码的执行瞬间，然后立即被销毁。
+    这意味这我们不能在运行时为基本类型值添加属性和方法。
+*/
+        // var s1 = "some text";
+        // s1.color = "red";
+        // console.log(s1.color);//undefined
+/* 
+第二行代码试图为字符串 s1 添加一个 color 属性。但是，当第三行代码再次访问 s1 时， 其color属性不见了。
+问题的原因就是第二行创建的String对象在执行第三行代码时已经被销毁了。
+第三行代码又创建自己的 String 对象，而该对象没有 color 属性。
+ */
+
+/* 
+可以显式地调用 Boolean、Number 和 String 来创建基本包装类型的对象。
+不过，应该在 绝对必要的情况下再这样做，因为这种做法很容易让人分不清自己是在处理基本类型还是引用类型的值。
+对基本包装类型的实例调用 typeof 会返回"object"，而且所有基本包装类型的对象都会被转换 为布尔值 true。
+*/
+
+//使用 new 调用基本包装类型的构造函数，与直接调用同名的转型函数是不一样的。
+//变量 number 中保存的是基本类型的值 25，而变量 obj 中保存的是 Number 的实例。
+
+        // var value = "25";
+        // var number = Number(value); //转型函数 
+        // console.log(typeof number) //number
+
+        // var obj = new Number(value); //构造函数 
+        // console.log(typeof obj); //object
+
+    
+    </script>
+
+
+
+
+
+</body>
+</html>
