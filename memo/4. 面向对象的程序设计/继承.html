@@ -232,9 +232,159 @@ valueOf()等默认方法的根本原因。所以，我们说上面例子展示�
     这样一来，就会在新 SubType 对象上执行 SuperType()函数中定义的所有对象初始化代码。
     结果， SubType 的每个实例就都会具有自己的 colors 属性的副本了。
 
+//传递参数
+
+相对于原型链而言，借用构造函数有一个很大的优势，即可以在子类型构造函数中向超类型构造函 数传递参数。看下面这个例子。
+
+    function SuperType(name, age) {
+        this.name = name;
+    }
+
+    function SubType() {
+        //继承了 SuperType,同时还传递了参数
+        SuperType.call(this, "Nicholas");
+        //实例属性
+        this.age = 29;
+    }
+    var instance = new SubType();
+    console.log(instance.name); //"Nicholas"
+    console.log(instance.age); //29
+
+    以上代码中的 SuperType 只接受一个参数 name，该参数会直接赋给一个属性。
+    在 SubType 构造 函数内部调用 SuperType 构造函数时，实际上是为 SubType 的实例设置了 name 属性。
+    为了确保 SuperType 构造函数不会重写子类型的属性，可以在调用超类型构造函数后，再添加应该在子类型中 定义的属性。
+
+//借用构造函数的问题
+    
+如果仅仅是借用构造函数，那么也将无法避免构造函数模式存在的问题——方法都在构造函数中定 义，因此函数复用就无从谈起了。
+而且，在超类型的原型中定义的方法，对子类型而言也是不可见的，结 果所有类型都只能使用构造函数模式。
+考虑到这些问题，借用构造函数的技术也是很少单独使用的。
+
+*/
+
+//组合继承
+/*
+组合继承(combination inheritance)，有时候也叫做伪经典继承，
+指的是将原型链和借用构造函数的 技术组合到一块，从而发挥二者之长的一种继承模式。
+
+其背后的思路是使用 原型链 实现对 原型属性和方法 的继承，而通过 借用构造函数 来实现对 实例属性 的继承。
+这样，既通过在原型上定义方法实现了函数 复用，又能够保证每个实例都有它自己的属性。
+
+    function SuperType(name) {
+        this.name = name;
+        this.colors = ["red", "blue", "green"];
+    }
+
+    SuperType.prototype.sayName = function() {
+        console.log(this.name);
+    }
+
+    function SubType(name, age) {
+        //继承属性
+        SuperType.call(this, name);
+        this.age = age;
+    }
+    //继承方法
+    SubType.prototype = new SuperType();
+    SubType.prototype.constructor = SubType;
+    SubType.prototype.sayAge = function() {
+        console.log(this.age);
+    }
+
+    var instance1 = new SubType("Nicholas", 29);
+    instance1.colors.push("black");
+    console.log(instance1.colors); //"red, blue, green, black"
+    instance1.sayName(); //Nicholas
+    instance1.sayAge(); //29
+
+    var instance2 = new SubType("Greg", 27);
+    console.log(instance2.colors); //"red, blue, green"
+    instance2.sayName(); //"Greg"
+    instance2.sayAge(); //27
+
+    在这个例子中，SuperType 构造函数定义了两个属性:name 和 colors。
+    SuperType 的原型定义 了一个方法 sayName()。SubType 构造函数在调用 SuperType 构造函数时传入了 name 参数，
+    紧接着 又定义了它自己的属性 age。然后，将 SuperType 的实例赋值给 SubType 的原型，
+    然后又在该新原型 上定义了方法 sayAge()。
+    这样一来，就可以让两个不同的 SubType 实例既分别拥有自己属性——包 括 colors 属性，又可以使用相同的方法了.
+
+组合继承避免了原型链和借用构造函数的缺陷，融合了它们的优点，成为 JavaScript 中最常用的继 承模式。
+而且，instanceof 和 isPrototypeOf()也能够用于识别基于组合继承创建的对象。
+
+//原型式继承
+
+道格拉斯·克罗克福德在 2006 年写了一篇文章，题为 Prototypal Inheritance in JavaScript (JavaScript 10 中的原型式继承)。
+在这篇文章中，他介绍了一种实现继承的方法，这种方法并没有使用严格意义上的 构造函数。他的想法是借助原型可以基于已有的对象创建新对象，
+同时还不必因此创建自定义类型。为 了达到这个目的，他给出了如下函数。
+
+    function object(o) {
+        function F(){}
+        F.prototype = o;
+        return new F();
+    }
+
+    在 object()函数内部，先创建了一个临时性的构造函数，然后将传入的对象作为这个构造函数的 原型，最后返回了这个􏹐时类型的一个新实例。
+    从本质上讲，object()对传入其中的对象执行了一次浅复制。来看下面的例子。
+
+    var person = {
+        name: "Nicholas",
+        friends:["Shelby", "Court", "van"]
+    }
+    var anotherPerson = Object(person);
+    anotherPerson.name = "Greg";
+    anotherPerson.friends.push("Rob");
+
+    var yetAnotherPerson = Object(person);
+    yetAnotherPerson.name = "Linda";
+    yetAnotherPerson.friends.push("Barbie");
+
+    console.log(person.friends); 
+
+    道格拉斯·克罗克福德的这种原型式继承，要求你必须有一个对象可以作为另一个对象的基础。
+    如果有这么 一个对象的话，可以把它传递给 object()函数，然后再根据具体需求对得到的对象加以修改即可。
+    在这 个例子中，可以作为另一个对象基础的是 person 对象，于是我们把它传入到 object()函数中，
+    然后该 函数就会返回一个新对象。这个新对象将 person 作为原型，所以它的原型中就包含一个基本类型值属性 和一个引用类型值属性。
+    这意味着 person.friends 不仅属于 person 所有，而且也会被 anotherPerson 以及 yetAnotherPerson 共享。
+    实际上，这就相当于又创建了 person 对象的两个副本。
+
+ECMAScript 5 通过新增 Object.create()方法规范化了原型式继承。
+这个方法接收两个参数:一 个用作新对象原型的对象和(可选的)一个为新对象定义额外属性的对象。
+在传入一个参数的情况下， Object.create()与 object()方法的行为相同。
+
+    var person = {
+        name: "Nicholas",
+        friends: ["Shellby", "Court", "Van"]
+    }
+    var anotherPerson = Object.create(person);
+    anotherPerson.name = "Greg";
+    anotherPerson.friends.push("Rob");
+
+    var yetAnotherPerson = Object.create(person);
+    yetAnotherPerson.name = "Linda";
+    yetAnotherPerson.friends.push("Barbie");
+    console.log(person.friends); //"Shelby,Court,Van,Rob,Barbie"
+
+Object.create()方法的第二个参数与 Object.defineProperties()方法的第二个参数格式相
+同:每个属性都是通过自己的描述符定义的。以这种方式指定的任何属性都会覆盖原型对象上的同名属
+性。例如:
+
 
 
 */
+var person = {
+    name: "Nicholas",
+    friends: ["Shelby", "Court", "Van"]
+};
+var anotherPerson = Object.create(person, {
+    name: {
+        value: "Greg"
+    }
+})
+console.log(anotherPerson.friends);  // "Greg"
+
+
+
+
 
 
     </script>
