@@ -176,12 +176,25 @@ screenX 和screenY 属性中提供相同的窗口位置信息，Safari 和Chrome
 最外层对象，而且浏览器窗口紧贴屏幕最上端——即 y轴坐标为 0，那么 screenTop 的值就是位于页面 
 可见区域上方的浏览器工具栏的像素高度。但是，在 Chrome、Firefox 和 Safari 中，screenY 或 screenTop 中保存的是整个浏览器窗口相对于屏幕的坐标值，即在窗口的 y 轴坐标为 0 时返回 0。
 
+Firefox、Safari 和 Chrome 始终返回页面中每个框架的 top.screenX 和 top.screenY 值。即使在页面由于被设置了外边􏲜而发生偏移的情况下，相对于 window 对象使用 screenX 
+和 screenY 每次也都会返回相同的值。而 IE 和 Opera 则会给出框架相对于屏幕边界的精确坐标值。
 
+最终结果，就是无法在跨浏览器的条件下取得窗口左边和上边的精确坐标值。
+然而，使用 moveTo() 和 moveBy()方法倒是有可能将窗口精确地移动到一个新位置。
+这两个方法都接收两个参数，其中moveTo()接收的是新位置的 x 和 y 坐标值，
+而 moveBy()接收的是在水平和垂直方向上移动的像素数。
 
+    //将窗口移动到屏幕左上角
+    window.moveTo(0, 0);
 
+    //将窗口向下移动 100像素
+    window.moveBy(0, 100)
 
+    //将窗口移动到(200,300) 
+    window.moveTo(200,300);
 
-
+    //将窗口向左移动 50像素 
+    window.moveBy(-50,0);
 
 */
 
