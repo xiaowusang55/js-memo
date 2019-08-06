@@ -171,6 +171,15 @@ screenX 和screenY 属性中提供相同的窗口位置信息，Safari 和Chrome
     Safari、Opera 和Chrome 中），则取得这两个属性的值。如果不存在（在Firefox 中），则取得screenX
     和screenY 的值。
 
+在使用这些值的过程中，还必须注意一些小问题。在 IE、Opera 中，screenLeft 和 screenTop 中保存 
+的是从屏幕左边和上边到由 window 对象表示的页面可见区域的距离。换句话说，如果 window 对象是 
+最外层对象，而且浏览器窗口紧贴屏幕最上端——即 y轴坐标为 0，那么 screenTop 的值就是位于页面 
+可见区域上方的浏览器工具栏的像素高度。但是，在 Chrome、Firefox 和 Safari 中，screenY 或 screenTop 中保存的是整个浏览器窗口相对于屏幕的坐标值，即在窗口的 y 轴坐标为 0 时返回 0。
+
+
+
+
+
 
 
 
