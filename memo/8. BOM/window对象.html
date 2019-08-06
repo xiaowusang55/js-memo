@@ -196,6 +196,219 @@ Firefox、Safari 和 Chrome 始终返回页面中每个框架的 top.screenX 和
     //将窗口向左移动 50像素 
     window.moveBy(-50,0);
 
+    需要注意的是，这两个方法可能会被浏览器禁用；而且，在Opera 和IE 7（及更高版本）中默认就
+    是禁用的。另外，这两个方法都不适用于框架，只能对最外层的window 对象使用。
+
+
+//窗口大小
+
+跨浏览器确定一个窗口的大小不是一件简单的事。IE9+、Firefox、Safari、Opera 和Chrome 均为此提
+供了4 个属性：innerWidth、innerHeight、outerWidth 和outerHeight。
+
+在IE9+、Safari 和Firefox
+中，outerWidth 和outerHeight 返回浏览器窗口本身的尺寸（无论是从最外层的window 对象还是从
+某个框架访问）
+在Opera 中，这两个属性的值表示页面视图容器①的大小。。而innerWidth 和innerHeight
+则表示该容器中页面视图区的大小（减去边框宽度）
+在Chrome 中，outerWidth、outerHeight 与
+innerWidth、innerHeight 返回相同的值，即视口（viewport）大小而非浏览器窗口大小。
+
+在IE、Firefox、Safari、Opera 和Chrome 中，document.documentElement.clientWidth 和
+document.documentElement.clientHeight 中保存了页面视口的信息。在IE6 中，这些属性必须在
+标准模式下才有效；
+如果是混杂模式，就必须通过document.body.clientWidth 和document.body.
+clientHeight 取得相同信息。而对于混杂模式下的Chrome，则无论通过document.documentElement
+还是document.body 中的clientWidth 和clientHeight 属性，都可以取得视口的大小。
+
+    虽然最终无法确定浏览器窗口本身的大小，但却可以取得页面视口的大小，如下所示。
+
+    var pageWidth = window.innerWidth,
+    pageHeight = window.innerHeight;
+    if (typeof pageWidth != "number"){
+    if (document.compatMode == "CSS1Compat"){
+    pageWidth = document.documentElement.clientWidth;
+    pageHeight = document.documentElement.clientHeight;
+    } else {
+    pageWidth = document.body.clientWidth;
+    pageHeight = document.body.clientHeight;
+    }
+    }
+
+    在以上代码中，我们首先将window.innerWidth 和window.innerHeight 的值分别赋给了
+    pageWidth 和pageHeight。然后检查pageWidth 中保存的是不是一个数值；如果不是，则通过检查
+    document.compatMode（这个属性将在第10 章全面讨论）来确定页面是否处于标准模式。如果是，则
+    分别使用document.documentElement.clientWidth 和document.documentElement.client-
+    Height 的值。否则，就使用document.body.clientWidth 和document.body.clientHeight 的值。
+
+
+对于移动设备，window.innerWidth 和window.innerHeight 保存着可见视口，也就是屏幕上可
+见页面区域的大小。移动IE 浏览器不支持这些属性，但通过document.documentElement.client-
+Width 和document.documentElement.clientHeihgt 提供了相同的信息。随着页面的缩放，这些值
+也会相应变化。
+
+在其他移动浏览器中，document.documentElement 度量的是布局视口，即渲染后页面的实际大
+小（与可见视口不同，可见视口只是整个页面中的一小部分）。移动IE 浏览器把布局视口的信息保存在
+document.body.clientWidth 和document.body.clientHeight 中。这些值不会随着页面缩放变化。
+由于与桌面浏览器间存在这些差异，最好是先检测一下用户是否在使用移动设备，然后再决定使用
+哪个属性。
+
+另外，使用resizeTo()和resizeBy()方法可以调整浏览器窗口的大小。这两个方法都接收两个
+参数，其中resizeTo()接收浏览器窗口的新宽度和新高度，而resizeBy()接收新窗口与原窗口的宽
+度和高度之差。来看下面的例子。
+
+    //调整到100×100
+    window.resizeTo(100, 100);
+    //调整到200×150
+    window.resizeBy(100, 50);
+    //调整到 300×300
+    window.resizeTo(300, 300);
+
+    需要注意的是，这两个方法与移动窗口位置的方法类似，也有可能被浏览器禁用；而且，在Opera
+    和IE7（及更高版本）中默认就是禁用的。另外，这两个方法同样不适用于框架，而只能对最外层的
+    window 对象使用。
+
+
+//导航和打开窗口
+
+使用window.open()方法既可以导航到一个特定的URL，也可以打开一个新的浏览器窗口。
+这个方法可以接收4 个参数：
+要加载的URL、窗口目标、一个特性字符串以及一个表示新页面是否取代浏览器历史记录中当前加载页面的布尔值。
+通常只须传递第一个参数，最后一个参数只在不打开新窗口的情况下使用。
+
+如果为window.open()传递了第二个参数，而且该参数是已有窗口或框架的名称，那么就会在具
+有该名称的窗口或框架中加载第一个参数指定的URL。看下面的例子。
+
+    //等同于< a href="http://www.wrox.com" target="topFrame"></a>
+    window.open("http://www.wrox.com/", "topFrame");
+
+    调用这行代码，就如同用户单击了href 属性为http://www.wrox.com/，target 属性为"topFrame"
+    的链接。如果有一个名叫"topFrame"的窗口或者框架，就会在该窗口或框架加载这个URL；否则，就
+    会创建一个新窗口并将其命名为"topFrame"。此外，第二个参数也可以是下列任何一个特殊的窗口名
+    称：_self、_parent、_top 或_blank
+
+//弹出窗口
+如果给window.open()传递的第二个参数并不是一个已经存在的窗口或框架，那么该方法就会根
+据在第三个参数位置上传入的字符串创建一个新窗口或新标签页。如果没有传入第三个参数，那么就会
+打开一个带有全部默认设置（工具栏、地址栏和状态栏等）的新浏览器窗口（或者打开一个新标签页—
+—根据浏览器设置）。在不打开新窗口的情况下，会忽略第三个参数。
+
+第三个参数是一个逗号分隔的设置字符串，表示在新窗口中都显示哪些特性。下表列出了可以出现
+在这个字符串中的设置选项。
+
+设 置               值                      说 明
+fullscreen         yes或no          表示浏览器窗口是否最大化。仅限IE
+height             数值             表示新窗口的高度。不能小于100
+left                数值          表示新窗口的左坐标。不能是负值
+location            yes或no          表示是否在浏览器窗口中显示地址栏。不同浏览器的默认值不同。如果
+                                    设置为no，地址栏可能会隐藏，也可能会被禁用（取决于浏览器）
+menubar             yes或no         表示是否在浏览器窗口中显示菜单栏。默认值为no
+resizable           yes或no         表示是否可以通过拖动浏览器窗口的边框改变其大小。默认值为no
+scrollbars          yes或no         表示如果内容在视口中显示不下，是否允许滚动。默认值为no
+status              yes或no         表示是否在浏览器窗口中显示状态栏。默认值为no
+toolbar             yes或no         表示是否在浏览器窗口中显示工具栏。默认值为no
+top                 数值            表示新窗口的上坐标。不能是负值
+width               数值            表示新窗口的宽度。不能小于100
+
+表中所列的部分或全部设置选项，都可以通过逗号分隔的名值对列表来指定。其中，名值对以等号
+表示（注意，整个特性字符串中不允许出现空格），如下面的例子所示。
+
+    window.open("http://www.wrox.com/","wroxWindow",
+    "height=400,width=400,top=10,left=10,resizable=yes");
+
+    这行代码会打开一个新的可以调整大小的窗口，窗口初始大小为400×400 像素，并且距屏幕上沿
+    和左边各10 像素。
+
+
+window.open()方法会返回一个指向新窗口的引用。引用的对象与其他window 对象大致相似，但
+我们可以对其进行更多控制。例如，有些浏览器在默认情况下可能不允许我们针对主浏览器窗口调整大
+小或移动位置，但却允许我们针对通过window.open()创建的窗口调整大小或移动位置。通过这个返
+回的对象，可以像操作其他窗口一样操作新打开的窗口，如下所示。
+
+    var wroxWin = window.open("http://www.wrox.com/","wroxWindow",
+    "height=400,width=400,top=10,left=10,resizable=yes");
+    //调整大小
+    wroxWin.resizeTo(500,500);
+    //移动位置
+    wroxWin.moveTo(100,100);
+    调用close()方法还可以关闭新打开的窗口。
+    wroxWin.close();
+
+新创建的window 对象有一个opener 属性，其中保存着打开它的原始窗口对象。这个属性只在弹出
+窗口中的最外层window 对象（top）中有定义，而且指向调用window.open()的窗口或框架。例如：
+
+    var wroxWin = window.open("http://www.wrox.com/","wroxWindow",
+    "height=400,width=400,top=10,left=10,resizable=yes");
+    alert(wroxWin.opener == window); //true
+
+虽然弹出窗口中有一个指针指向打开它的原始窗口，但原始窗口中并没有这样的指针指向弹出窗
+口。窗口并不跟踪记录它们打开的弹出窗口，因此我们只能在必要的时候自己来手动实现跟踪。
+
+有些浏览器（如IE8 和Chrome）会在独立的进程中运行每个标签页。当一个标签页打开另一个标
+签页时，如果两个window 对象之间需要彼此通信，那么新标签页就不能运行在独立的进程中。在Chrome
+中，将新创建的标签页的opener 属性设置为null，即表示在单独的进程中运行新标签页，如下所示。
+
+    var wroxWin = window.open("http://www.wrox.com/","wroxWindow",
+    "height=400,width=400,top=10,left=10,resizable=yes");
+    wroxWin.opener = null;
+
+将opener 属性设置为null 就是告诉浏览器新创建的标签页不需要与打开它的标签页通信，因此
+可以在独立的进程中运行。标签页之间的联系一旦切断，将没有办法恢复。
+
+//安全限制
+
+曾经有一段时间，广告商在网上使用弹出窗口达到了肆无忌惮的程度。他们经常把弹出窗口打扮成
+系统对话框的模样，引诱用户去点击其中的广告。由于看起来像是系统对话框，一般用户很难分辨是真
+是假。为了解决这个问题，有些浏览器开始在弹出窗口配置方面增加限制。
+
+Windows XP SP2 中的IE6 对弹出窗口施加了多方面的安全限制，包括不允许在屏幕之外创建弹出窗
+口、不允许将弹出窗口移动到屏幕以外、不允许关闭状态栏等。IE7 则增加了更多的安全限制，如不允
+许关闭地址栏、默认情况下不允许移动弹出窗口或调整其大小。Firefox 1 从一开始就不支持修改状态栏，
+因此无论给window.open()传入什么样的特性字符串，弹出窗口中都会无一例外地显示状态栏。后来
+的Firefox 3 又强制始终在弹出窗口中显示地址栏。Opera 只会在主浏览器窗口中打开弹出窗口，但不允
+许它们出现在可能与系统对话框混淆的地方。
+
+此外，有的浏览器只根据用户操作来创建弹出窗口。这样一来，在页面尚未加载完成时调用
+window.open()的语句根本不会执行，而且还可能会将错误消息显示给用户。换句话说，只能通过单
+击或者击键来打开弹出窗口。
+对于那些不是用户有意打开的弹出窗口，Chrome 采取了不同的处理方式。它不会像其他浏览器那
+样简单地屏蔽这些弹出窗口，而是只显示它们的标题栏，并把它们放在浏览器窗口的右下角。
+
+//弹出窗口屏蔽程序
+
+大多数浏览器都内置有弹出窗口屏蔽程序，而没有内置此类程序的浏览器，也可以安装Yahoo!
+Toolbar 等带有内置屏蔽程序的实用工具。结果就是用户可以将绝大多数不想看到弹出窗口屏蔽掉。于
+是，在弹出窗口被屏蔽时，就应该考虑两种可能性。如果是浏览器内置的屏蔽程序阻止的弹出窗口，那
+么window.open()很可能会返回null。此时，只要检测这个返回的值就可以确定弹出窗口是否被屏蔽
+了，如下面的例子所示。
+
+    var wroxWin = window.open("http://www.wrox.com", "_blank");
+    if (wroxWin == null){
+    alert("The popup was blocked!");
+    }
+
+如果是浏览器扩展或其他程序阻止的弹出窗口，那么window.open()通常会抛出一个错误。因此，
+要想准确地检测出弹出窗口是否被屏蔽，必须在检测返回值的同时，将对window.open()的调用封装
+在一个try-catch 块中，如下所示。
+
+    var blocked = false;
+    try {
+    var wroxWin = window.open("http://www.wrox.com", "_blank");
+    if (wroxWin == null){
+    blocked = true;
+    }
+    } catch (ex){
+    blocked = true;
+    }
+    if (blocked){
+    alert("The popup was blocked!");
+    }  
+
+在任何情况下，以上代码都可以检测出调用window.open()打开的弹出窗口是不是被屏蔽了。但
+要注意的是，检测弹出窗口是否被屏蔽只是一方面，它并不会阻止浏览器显示与被屏蔽的弹出窗口有关
+的消息。
+
+//间歇调用和超时调用
+
 */
 
 

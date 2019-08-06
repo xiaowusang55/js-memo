@@ -14,10 +14,32 @@
 
 <body>
 
+    <button>Click me</button>
 
     <script>
-        console.log("距离屏幕左边: " + window.screenLeft);    
-        console.log("距离屏幕上边: " + window.screenTop);  
+        let btn = document.querySelector("button");
+
+        console.log("距离屏幕左边: " + window.screenLeft);
+        console.log("距离屏幕上边: " + window.screenTop);
+
+        // console.log(innerWidth);
+        // console.log(innerHeight);
+
+        console.log(document.documentElement.clientHeight);
+        console.log(document.documentElement.clientWidth);
+
+
+        btn.onclick = () => {
+            let newWin = window.open("http://www.baidu.com", "_blank",
+                "height=400, width=400, top=100, left=100, resizable=yes, menubar=yes");
+            console.log(newWin);
+            newWin.moveTo(-100, -100)
+            newWin.resizeTo(1000, 1000);
+        }
+
+       console.log(window.opener);
+     
+
 
     </script>
 
