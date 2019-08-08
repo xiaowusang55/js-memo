@@ -43,16 +43,57 @@
 
         // console.log(confirm("hello js"));
 
-        console.log("================================================");
 
 
 
         btn1.onclick = () => {
 
-            
-            window.print()
-            
+
+            // window.print()
+
         }
+
+
+        // setTimeout(() => {
+
+        //     location.reload(true);
+
+        // }, 2000);
+
+        // setInterval(() => {
+
+        //     location.reload(true);
+
+        // }, 2000);
+
+        console.log(navigator.oscpu);
+
+        //检测插件（在IE 中无效）
+        function hasPlugin(name) {
+            name = name.toLowerCase();
+            for (var i = 0; i < navigator.plugins.length; i++) {
+                if (navigator.plugins[i].name.toLowerCase().indexOf(name) > -1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        navigator.plugins.refresh();
+        //检测Flash
+        console.log(hasPlugin("idm"));
+        //检测QuickTime
+        console.log(hasPlugin("Chrome PDF Plugin"));
+        console.log("================================================");
+
+        if(history.length == 0) {
+            console.log("this is the first page ");
+        } else {
+            console.log(history.length);
+
+        }
+
+
+
 
 
 
