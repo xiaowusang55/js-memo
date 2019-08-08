@@ -15,9 +15,11 @@
 <body>
 
     <button>Click me</button>
+    <button>Print</button>
 
     <script>
-        let btn = document.querySelector("button");
+        let btn = document.querySelector("button:first-child");
+        let btn1 = document.querySelector("button:nth-child(2)");
 
         console.log("距离屏幕左边: " + window.screenLeft);
         console.log("距离屏幕上边: " + window.screenTop);
@@ -37,8 +39,22 @@
             newWin.resizeTo(1000, 1000);
         }
 
-       console.log(window.opener);
-     
+        console.log(window.opener);
+
+        // console.log(confirm("hello js"));
+
+        console.log("================================================");
+
+
+
+        btn1.onclick = () => {
+
+            
+            window.print()
+            
+        }
+
+
 
 
     </script>
